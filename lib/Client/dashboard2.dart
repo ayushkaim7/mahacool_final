@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:inventory_app/Client/dashboard3.dart';
+import 'package:inventory_app/Client/data_model.dart';
 import 'package:inventory_app/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:workmanager/workmanager.dart';
@@ -30,6 +31,7 @@ void initState() {
   fetchWarehouses(widget.cityName);
 }
 
+
 Future<void> fetchWarehouses(String cityName) async {
   final response = await http.get(
     Uri.parse('${BASE_URL}api/CustomerHistory/customer-details?customerId=$ID'),
@@ -56,9 +58,11 @@ Future<void> fetchWarehouses(String cityName) async {
 
           warehouseWeights[warehouseName] = (warehouseWeights[warehouseName] ?? 0) + weight;
         }
-      }
-    }
 
+      }
+      
+    }
+    
     // Process check-out history
     List<dynamic> checkOutHistory = data['checkOutHistory'];
     for (var checkOut in checkOutHistory) {
@@ -300,6 +304,9 @@ Future<List<DryFruit>> _getDryFruitsForWarehouse(String warehouseName) async {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                // ElevatedButton(onPressed: (){
+                //   print(warehouseList);
+                // }, child: Text('print'))
               ],
             ),
           ),

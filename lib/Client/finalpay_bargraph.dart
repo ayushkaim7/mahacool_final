@@ -142,7 +142,7 @@ class _QuarterlyBarGraphState extends State<QuarterlyBarGraph> {
 
   Future<void> updatePaidTotals(
       int invoiceId, double paidGrandTotalAmounts) async {
-    final url = '${BASE_URL}api/MonthlyInvoice/updatePaidTotals/$invoiceId';
+    final url = 'https://mahacoolpdfapi.onrender.com/api/MonthlyInvoice/updatePaidTotals/$invoiceId';
 
     final headers = {
       'Content-Type': 'application/json',
@@ -251,16 +251,16 @@ class _QuarterlyBarGraphState extends State<QuarterlyBarGraph> {
   @override
   Widget build(BuildContext context) {
     final List<List<String>> quarters = [
-      ['Jan-2024', 'Feb-2024', 'Mar-2024'], // Q1
-      ['Apr-2024', 'May-2024', 'Jun-2024'], // Q2
-      ['Jul-2024', 'Aug-2024', 'Sep-2024'], // Q3
-      ['Oct-2024', 'Nov-2024', 'Dec-2024'], // Q4
+      ['Jan-2025', 'Feb-2025', 'Mar-2025'], // Q1
+      ['Apr-2025', 'May-2025', 'Jun-2025'], // Q2
+      ['Jul-2025', 'Aug-2025', 'Sep-2025'], // Q3
+      ['Oct-2025', 'Nov-2025', 'Dec-2025'], // Q4
     ];
     final List<List<String>> quarters2 = [
-      ['Jan-2024', 'Feb-2024', 'Mar-2024'], // Q1
-      ['Apr-2024', 'May-2024', 'Jun-2024'], // Q2
-      ['Jul-2024', 'Aug-2024', 'Sept-2024'], // Q3
-      ['Oct-2024', 'Nov-2024', 'Dec-2024'], // Q4
+      ['Jan-2025', 'Feb-2025', 'Mar-2025'], // Q1
+      ['Apr-2025', 'May-2025', 'Jun-2025'], // Q2
+      ['Jul-2025', 'Aug-2025', 'Sept-2025'], // Q3
+      ['Oct-2025', 'Nov-2025', 'Dec-2025'], // Q4
     ];
     
 
@@ -422,7 +422,7 @@ class _QuarterlyBarGraphState extends State<QuarterlyBarGraph> {
               ),
               onPressed: () {
                 // Handle the button press logic here
-                if (enteredAmount.isNotEmpty) {
+                if (topay > 0) {
                   openCheckout(topay);
                   print("Amount to pay: $topay");
                 } else {

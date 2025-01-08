@@ -1,4 +1,4 @@
-package com.mahacool.inventory_app
+package com.MahaCoolApp.inventory_app
 
 import io.flutter.embedding.android.FlutterActivity
 

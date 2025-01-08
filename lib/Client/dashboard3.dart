@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inventory_app/Client/dashboard4.dart';
+import 'package:inventory_app/Client/data_model.dart';
+import 'package:inventory_app/manager_search_box.dart';
 import 'package:workmanager/workmanager.dart';
 
 class Dashboard3 extends StatefulWidget {
@@ -21,12 +23,16 @@ class Dashboard3 extends StatefulWidget {
 }
 
 class _Dashboard3State extends State<Dashboard3> {
+
+
   late Future<void> _imageLoadFuture;
 
   @override
   void initState() {
     super.initState();
     _imageLoadFuture = _loadImages();
+
+     
   }
 
   Future<void> _loadImages() async {
@@ -145,7 +151,13 @@ class _Dashboard3State extends State<Dashboard3> {
                   color: Colors.grey[700],
                 ),
               );
-              })
+              }),
+    //           ElevatedButton(onPressed: (){
+    //             final allDryFruitNames =
+    //     widget.dryFruits.map((dryFruit) => dryFruit.name).join(", ");
+
+    // print("DryFruit Names: $allDryFruitNames");
+    //           }, child: Text('print'))
             ],
           ),
         ),

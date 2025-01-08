@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:inventory_app/Client/data_model.dart';
 import 'dart:convert';
-
 import 'package:inventory_app/constants.dart';
 import 'package:inventory_app/map_pages.dart';
 
@@ -9,33 +9,63 @@ class CheckoutFormPage extends StatefulWidget {
   final Map<String, dynamic> client_Details;
 
   const CheckoutFormPage({super.key, required this.client_Details});
+
   @override
   _CheckoutFormPageState createState() => _CheckoutFormPageState();
 }
 
 class _CheckoutFormPageState extends State<CheckoutFormPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _dryFruitNameController = TextEditingController();
-  final TextEditingController _cityNameController = TextEditingController();
-  final TextEditingController _warehouseNameController = TextEditingController();
+
+  // Controllers
   final TextEditingController _weightController = TextEditingController();
+
+  // Dropdown values
+  List<String> dryFruitList = [];
+  List<String> cityList = [];
+  List<String> warehouseList = [];
+  String? selectedDryFruit;
+  String? selectedCity;
+  String? selectedWarehouse;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchResponseData();
+  }
+
+  Future<void> _fetchResponseData() async {
+    final response = await http.get(
+      Uri.parse('${BASE_URL}api/CustomerHistory/customer-details?customerId=${widget.client_Details["customerID"]}'),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      ResponseModel responseModel = ResponseModel.fromJson(jsonResponse);
+
+      setState(() {
+        dryFruitList = responseModel.dryFruitNames.split(", ");
+        cityList = responseModel.cityNames;
+        warehouseList = responseModel.warehouseList
+            .map((warehouse) => warehouse['warehouseName'] as String)
+            .toList();
+      });
+    } else {
+      print("Failed to fetch data");
+    }
+  }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      final String dryFruitName = _dryFruitNameController.text;
-      final String cityName = _cityNameController.text;
-      final String warehouseName = _warehouseNameController.text;
-      final int weight = int.parse(_weightController.text);
-
       final Map<String, dynamic> requestBody = {
         'customerId': widget.client_Details["customerID"],
         'name': widget.client_Details["name"],
         'email': widget.client_Details["email"],
         'mobile': widget.client_Details["mobile"],
-        'dryFruitName': dryFruitName,
-        'cityName': cityName,
-        'warehouseName': warehouseName,
-        'weight': weight,
+        'dryFruitName': selectedDryFruit,
+        'cityName': selectedCity,
+        'warehouseName': selectedWarehouse,
+        'weight': int.parse(_weightController.text),
       };
 
       final response = await http.post(
@@ -45,9 +75,11 @@ class _CheckoutFormPageState extends State<CheckoutFormPage> {
       );
 
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Checkout request successful!')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Checkout request successful!')));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to send request.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to send request.')));
       }
     }
   }
@@ -60,9 +92,7 @@ class _CheckoutFormPageState extends State<CheckoutFormPage> {
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
-            
             children: [
-              SizedBox(height: 30),
               TextButton(onPressed: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context) => MapPage()));
                 }, child: Text("Get Location" , style: TextStyle(fontFamily: 'helvetica' , color: Colors.red , decoration: TextDecoration.underline , decorationColor: Colors.red , decorationThickness: 2),)),
@@ -79,40 +109,51 @@ class _CheckoutFormPageState extends State<CheckoutFormPage> {
               Form(
                 key: _formKey,
                 child: Column(
-                  children: <Widget>[
-                    _buildCustomTextField(
-                      controller: _dryFruitNameController,
-                      hintText: 'Enter Dry Fruit Name',
-                      icon: Icons.local_offer,
-                      label: 'Dry Fruit Name',
+                  children: [
+                    _buildDropdown(
+                      value: selectedDryFruit,
+                      hint: "Select Dry Fruit",
+                      items: dryFruitList,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedDryFruit = value;
+                        });
+                      },
                     ),
                     SizedBox(height: 20),
-                    _buildCustomTextField(
-                      controller: _cityNameController,
-                      hintText: 'Enter City Name',
-                      icon: Icons.location_city,
-                      label: 'City Name',
+                    _buildDropdown(
+                      value: selectedCity,
+                      hint: "Select City",
+                      items: cityList,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedCity = value;
+                        });
+                      },
                     ),
                     SizedBox(height: 20),
-                    _buildCustomTextField(
-                      controller: _warehouseNameController,
-                      hintText: 'Enter Warehouse Name',
-                      icon: Icons.home_work,
-                      label: 'Warehouse Name',
+                    _buildDropdown(
+                      value: selectedWarehouse,
+                      hint: "Select Warehouse",
+                      items: warehouseList,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedWarehouse = value;
+                        });
+                      },
                     ),
                     SizedBox(height: 20),
-                    _buildCustomTextField(
+                    _buildTextField(
                       controller: _weightController,
-                      hintText: 'Enter Weight (in grams)',
-                      icon: Icons.scale,
-                      label: 'Weight',
+                      label: "Weight (in grams)",
                       keyboardType: TextInputType.number,
                     ),
                     SizedBox(height: 30),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blueAccent,
-                        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -133,11 +174,31 @@ class _CheckoutFormPageState extends State<CheckoutFormPage> {
     );
   }
 
-  // Custom Text Field Widget
-  Widget _buildCustomTextField({
+  Widget _buildDropdown({
+    required String? value,
+    required String hint,
+    required List<String> items,
+    required void Function(String?) onChanged,
+  }) {
+    return DropdownButtonFormField<String>(
+      value: value,
+      hint: Text(hint),
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
+      ),
+      items: items.map((String item) {
+        return DropdownMenuItem<String>(
+          value: item,
+          child: Text(item),
+        );
+      }).toList(),
+      onChanged: onChanged,
+    );
+  }
+
+  Widget _buildTextField({
     required TextEditingController controller,
-    required String hintText,
-    required IconData icon,
     required String label,
     TextInputType keyboardType = TextInputType.text,
   }) {
@@ -148,39 +209,13 @@ class _CheckoutFormPageState extends State<CheckoutFormPage> {
         if (value == null || value.isEmpty) {
           return 'Please enter $label';
         }
-        if (keyboardType == TextInputType.number && int.tryParse(value) == null) {
-          return 'Please enter a valid number';
-        }
         return null;
       },
       decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.white,
-        hintText: hintText,
-        prefixIcon: Icon(icon, color: Colors.blueAccent),
-        contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          borderSide: BorderSide(color: Colors.grey.shade300),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          borderSide: BorderSide(color: Colors.blueAccent, width: 2),
-        ),
+        labelText: label,
+        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _dryFruitNameController.dispose();
-    _cityNameController.dispose();
-    _warehouseNameController.dispose();
-    _weightController.dispose();
-    super.dispose();
   }
 }

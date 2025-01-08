@@ -152,7 +152,7 @@ class _ShoppingScreentate extends State<PackageScreen> {
                         padding: const EdgeInsets.only(top: 20, right: 20),
                         child:  LayoutBuilder(builder: (context , Constraints){
                           return Text(
-                          "+ Story",
+                          "+ Rack",
                           style: TextStyle(color: Colors.black , fontSize: MediaQuery.of(context).size.width * 0.04),
                         );
                         })),
@@ -213,7 +213,7 @@ class _ShoppingScreentate extends State<PackageScreen> {
                  SizedBox(
                           
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height  - 70,
+                            height: MediaQuery.of(context).size.height,
                             child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 shrinkWrap: true,
@@ -225,6 +225,7 @@ class _ShoppingScreentate extends State<PackageScreen> {
                                     padding: const EdgeInsets.only(left: 10),
                                     child: Column(
                                       children: [
+                                        Text('Rack Name'),
                                         SizedBox(height: 20,),
                                         Row(
                                           children: [

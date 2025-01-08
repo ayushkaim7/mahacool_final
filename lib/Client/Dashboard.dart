@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:inventory_app/Client/dashboard2.dart';
 import 'package:inventory_app/Client/client_show_warehouse.dart';
 import 'package:http/http.dart' as http;
+import 'package:inventory_app/Client/data_model.dart';
 import 'package:inventory_app/constants.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:workmanager/workmanager.dart';
@@ -32,6 +33,7 @@ class _DashboardPageState extends State<DashboardPage> {
     super.initState();
     customerID = widget.client_Details["customerID"];
     fetchCustomerHistory();
+    //fetchCustomerDetails(widget.client_Details["customerID"]);
   }
 
 
@@ -64,6 +66,34 @@ Future<void> getCurrentLocation() async {
   Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
   print(position);
 }
+
+
+// Future<ResponseModel?> fetchCustomerDetails(String customerId) async {
+//   print('ghus gya bhai');
+//   try {
+//     final response = await http.get(
+//       Uri.parse('https://mahacool-437301.el.r.appspot.com/api/CustomerHistory/customer-details?customerId=$customerId'),
+//     );
+
+//     if (response.statusCode == 200) {
+//       final jsonResponse = jsonDecode(response.body);
+//       ResponseModel responseModel = ResponseModel.fromJson(jsonResponse);
+
+//       print("City Names: ${responseModel.cityNames}");
+//       print("Warehouse List: ${responseModel.warehouseList}");
+//       print("Dry Fruit Names: ${responseModel.dryFruitNames}");
+
+//       return responseModel;
+//     } else {
+//       print("Failed to load data: ${response.statusCode}");
+//       return null;
+//     }
+//   } catch (e) {
+//     print("Error fetching data: $e");
+//     return null;
+//   }
+// }
+
 
 
 Future<void> fetchCustomerHistory() async {
@@ -99,6 +129,7 @@ Future<void> fetchCustomerHistory() async {
       if (mounted) {
         setState(() {
           cityList = cities.toList();
+          
         });
       }
 
@@ -294,6 +325,9 @@ Future<void> fetchAllCityWeights() async {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                // ElevatedButton(onPressed: (){
+                //   print(cityList);
+                // }, child: Text('print'))
               ],
             ),
           ),

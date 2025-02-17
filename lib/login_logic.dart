@@ -28,15 +28,15 @@ class _LoginFormState extends State<LoginForm> {
   var errorMsg;
   bool hideconpass = true;
   List<String> list = <String>['Client', 'Manager', 'Driver', 'Security'];
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passController = TextEditingController();
+  TextEditingController emailController = TextEditingController(text: 'khush@gmail.com');
+  TextEditingController passController = TextEditingController(text: '12345678');
   TextEditingController phoneController = TextEditingController();
   TextEditingController customerid = TextEditingController();
   
 
 
 
-  String _selectedvalue = 'Client';
+  String _selectedvalue = 'Manager';
 
 
 
